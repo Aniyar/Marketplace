@@ -1,0 +1,31 @@
+# Spring Boot configuration
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: development
+  # Database
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:32769/postgres
+    username: postgres
+    password:
+  # JPA properties
+  jpa:
+    hibernate:
+      #ddl-auto: create-drop
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+application:
+  security:
+    jwt:
+      secret-key: 50655368566D5971337436763979244226452948404D635166546A576E5A7234
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
