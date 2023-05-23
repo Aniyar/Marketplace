@@ -7,6 +7,7 @@ import com.example.bakery.exceptionHandler.UserNotFoundException;
 import com.example.bakery.model.*;
 import com.example.bakery.repository.*;
 import com.example.bakery.request.*;
+import com.example.bakery.response.SellerResponse;
 import com.example.bakery.service.AdminService;
 import com.example.bakery.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class AdminController {
     private final SellerRepository sellerRepository;
     private final BecomeSellerRequestRepository BSRrepository;
     private final AdminService adminService;
+    private final OrderRepository orderRepository;
 
     @GetMapping("/category")
     public ResponseEntity<Iterable<ProductCategory>> getCategories(){
@@ -61,19 +63,25 @@ public class AdminController {
     }
 
     @PutMapping("/sellerRequests/{id}/approve")
-    public ResponseEntity<Seller> approveSellerRequest(@PathVariable Integer id) throws SellerRequestNotFoundException, UserNotFoundException {
+    public ResponseEntity<SellerResponse> approveSellerRequest(@PathVariable Integer id) throws SellerRequestNotFoundException, UserNotFoundException {
         return ResponseEntity.ok(adminService.approveSellerRequest(id));
     }
 
     @GetMapping("/seller")
-    public ResponseEntity<Iterable<Seller>> getSellers(){
-        return ResponseEntity.ok(sellerRepository.findAll());
+    public ResponseEntity<Iterable<SellerResponse>> getSellers(){
+        return ResponseEntity.ok(adminService.getAllSellers());
     }
 
     @DeleteMapping ("/seller/delete/{id}")
     public ResponseEntity deleteSeller(@PathVariable Integer id) throws SellerNotFoundException {
         adminService.deleteSeller(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<Iterable<Order>> getAllOrders(){
+        Iterable<Order> orders = orderRepository.findAll();
+        return ResponseEntity.ok(orders);
     }
 
 }

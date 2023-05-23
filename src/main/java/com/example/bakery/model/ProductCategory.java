@@ -20,6 +20,4 @@ public class ProductCategory {
     private Integer id;
     @Column(nullable = false, unique = true)
     private String name;
-//    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Product> products;
 }

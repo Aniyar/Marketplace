@@ -44,4 +44,11 @@ public class GlobalExceptionHandler {
         ErrorResponse er = new ErrorResponse(ex.getClass().getName(), HttpStatus.NOT_FOUND.toString(), ex.getMessage(), null);
         return new ResponseEntity<>(er, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler({ OutOfStockException.class})
+    public final ResponseEntity<ErrorResponse> handleOutOfStockException(OutOfStockException ex){
+        ErrorResponse er = new ErrorResponse(ex.getClass().getName(), HttpStatus.CONFLICT.toString(), ex.getMessage(), null);
+        return new ResponseEntity<>(er, HttpStatus.CONFLICT);
+    }
+
 }

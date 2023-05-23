@@ -4,5 +4,6 @@ public enum OrderStatus {
     CART,
     READY,
     PICKED_UP,
-    SHIPPED
+    SHIPPED,
+    CANCELLED
 }

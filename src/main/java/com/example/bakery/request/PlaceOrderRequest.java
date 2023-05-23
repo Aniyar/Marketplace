@@ -9,5 +9,5 @@ public class PlaceOrderRequest {
     @NotNull
     private String address;
     @NotNull
-    private PaymentStatus paymentStatus;
+    private String paymentStatus;
 }

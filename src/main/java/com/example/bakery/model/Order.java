@@ -26,8 +26,6 @@ public class Order {
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems;
     @NotNull
     private Date createdAt;
     private Date pickedUpAt;
@@ -40,4 +38,8 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
     private Integer total;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name="seller_id")
+    private Seller seller;
 }

@@ -31,6 +31,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/api/v1/becomeSeller").permitAll()
                 .requestMatchers("/api/v1/admin/**").hasAuthority(Role.ADMIN.name())
                 .requestMatchers("/api/v1/seller/**").hasAuthority(Role.SELLER.name())
+                .requestMatchers("/api/v1/order/**").hasAuthority(Role.USER.name())
                 .anyRequest()
                 .authenticated()
                 .and()

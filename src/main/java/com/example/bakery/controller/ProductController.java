@@ -3,10 +3,13 @@ package com.example.bakery.controller;
 
 import com.example.bakery.exceptionHandler.CategoryNotFoundException;
 import com.example.bakery.exceptionHandler.ProductNotFoundException;
+import com.example.bakery.exceptionHandler.SellerNotFoundException;
 import com.example.bakery.exceptionHandler.UserNotAuthorisedException;
 import com.example.bakery.model.*;
 import com.example.bakery.repository.*;
 import com.example.bakery.request.AddToCartRequest;
+import com.example.bakery.response.OrderItemResponse;
+import com.example.bakery.response.ProductResponse;
 import com.example.bakery.service.ProductService;
 import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
@@ -28,24 +31,24 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<Iterable<Product>> getAllProducts(){
-        return ResponseEntity.ok(productRepository.findAll());
+    public ResponseEntity<Iterable<ProductResponse>> getAllProducts(){
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<Iterable<Product>> getAllProductsByCategoryId(@PathVariable Integer categoryId) throws CategoryNotFoundException {
+    public ResponseEntity<Iterable<ProductResponse>> getAllProductsByCategoryId(@PathVariable Integer categoryId) throws CategoryNotFoundException {
         return ResponseEntity.ok(productService.findAllByCategoryId(categoryId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) throws ProductNotFoundException {
-        return ResponseEntity.ok(productRepository.findById(id).orElseThrow(ProductNotFoundException:: new));
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) throws ProductNotFoundException {
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @PostMapping("/addToCart")
-    public ResponseEntity<OrderItem> addToCart(
+    public ResponseEntity<OrderItemResponse> addToCart(
             @RequestBody AddToCartRequest request,
-            @AuthenticationPrincipal UserDetails userDetails) throws UserNotAuthorisedException, ProductNotFoundException {
+            @AuthenticationPrincipal UserDetails userDetails) throws UserNotAuthorisedException, ProductNotFoundException, SellerNotFoundException {
         return ResponseEntity.ok(productService.addToCart(request, userDetails));
     }
 }

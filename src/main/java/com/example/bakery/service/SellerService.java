@@ -3,19 +3,17 @@ package com.example.bakery.service;
 import com.example.bakery.exceptionHandler.CategoryNotFoundException;
 import com.example.bakery.exceptionHandler.SellerNotFoundException;
 import com.example.bakery.exceptionHandler.UserNotAuthorisedException;
-import com.example.bakery.model.Product;
-import com.example.bakery.model.ProductCategory;
-import com.example.bakery.model.Seller;
-import com.example.bakery.model.User;
-import com.example.bakery.repository.ProductCategoryRepository;
-import com.example.bakery.repository.ProductRepository;
-import com.example.bakery.repository.SellerRepository;
-import com.example.bakery.repository.UserRepository;
+import com.example.bakery.model.*;
+import com.example.bakery.repository.*;
 import com.example.bakery.request.AddProductRequest;
+import com.example.bakery.response.OrderResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +22,8 @@ public class SellerService {
     private final ProductCategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final SellerRepository sellerRepository;
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
     public Product addProduct(AddProductRequest request, UserDetails userDetails) throws UserNotAuthorisedException, CategoryNotFoundException, SellerNotFoundException {
         User sellerUser = userRepository.findByPhoneNumber(userDetails.getUsername()).orElseThrow(UserNotAuthorisedException::new);
@@ -37,4 +37,6 @@ public class SellerService {
                                                 .quantity(request.getQuantity())
                                                 .build());
     }
+
+
 }
