@@ -46,6 +46,7 @@ public class OrderService {
                         }
                     });
                     order.setPaymentStatus(PaymentStatus.valueOf(request.getPaymentStatus()));
+                    order.setShippingAddress(request.getAddress());
                     order.setStatus(OrderStatus.READY);
                     orderRepository.save(order);
                 }
@@ -88,7 +89,9 @@ public class OrderService {
 
     public OrderResponse convertToOrderResponse(Order order){
         return OrderResponse.builder()
+                .id(order.getId())
                 .sellerId(order.getSeller().getId())
+                .status(order.getStatus().name())
                 .items(StreamSupport.stream(orderItemRepository.findAllByOrderId(order.getId()).spliterator(), true)
                         .map(orderItem -> new OrderItemResponse(orderItem))
                         .collect(Collectors.toList()))
@@ -97,18 +100,19 @@ public class OrderService {
                 .build();
     }
 
-    public Order sellerChangeOrderStatus(UserDetails userDetails, Long orderId, OrderStatus status) throws UserNotAuthorisedException, SellerNotFoundException, OrderNotFoundException {
+    public OrderResponse sellerChangeOrderStatus(UserDetails userDetails, Long orderId, OrderStatus status) throws UserNotAuthorisedException, SellerNotFoundException, OrderNotFoundException {
         User sellerUser = userRepository.findByPhoneNumber(userDetails.getUsername()).orElseThrow(UserNotAuthorisedException::new);
         Seller seller = sellerRepository.findByUser(sellerUser).orElseThrow(SellerNotFoundException::new);
         Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
         order.setStatus(status);
-        return orderRepository.save(order);
+        orderRepository.save(order);
+        return  convertToOrderResponse(order);
     }
 
-    public Order getOrderById(UserDetails userDetails, Long id) throws OrderNotFoundException, SellerNotFoundException, UserNotAuthorisedException {
+    public OrderResponse getOrderById(UserDetails userDetails, Long id) throws OrderNotFoundException, SellerNotFoundException, UserNotAuthorisedException {
         User sellerUser = userRepository.findByPhoneNumber(userDetails.getUsername()).orElseThrow(UserNotAuthorisedException::new);
         Seller seller = sellerRepository.findByUser(sellerUser).orElseThrow(SellerNotFoundException::new);
-        return orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
-
+        Order order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
+        return convertToOrderResponse(order);
     }
 }

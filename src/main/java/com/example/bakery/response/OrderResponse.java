@@ -16,7 +16,9 @@ import java.util.stream.StreamSupport;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderResponse {
+    private Long id;
     private Integer sellerId;
+    private String status;
     private List<OrderItemResponse> items;
     private Integer total;
     private String address;

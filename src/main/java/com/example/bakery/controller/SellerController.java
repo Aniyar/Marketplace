@@ -5,10 +5,7 @@ import com.example.bakery.exceptionHandler.OrderNotFoundException;
 import com.example.bakery.exceptionHandler.SellerNotFoundException;
 import com.example.bakery.exceptionHandler.UserNotAuthorisedException;
 import com.example.bakery.model.*;
-import com.example.bakery.repository.*;
 import com.example.bakery.request.AddProductRequest;
-import com.example.bakery.model.BecomeSellerRequest;
-import com.example.bakery.request.ChangeOrderStatusRequest;
 import com.example.bakery.response.OrderResponse;
 import com.example.bakery.service.OrderService;
 import com.example.bakery.service.SellerService;
@@ -20,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -52,7 +48,7 @@ public class SellerController {
     @GetMapping("/orders/delivery")
     public ResponseEntity<Iterable<OrderResponse>> deliveryOrders(
             @AuthenticationPrincipal UserDetails userDetails) throws UserNotAuthorisedException, SellerNotFoundException {
-        return ResponseEntity.ok(orderService.sellerGetOrders(userDetails, OrderStatus.PICKED_UP));
+        return ResponseEntity.ok(orderService.sellerGetOrders(userDetails, OrderStatus.DELIVERY));
     }
 
     @GetMapping("/orders/completed")
@@ -62,22 +58,22 @@ public class SellerController {
     }
 
     @GetMapping("/orders/{id}")
-    public ResponseEntity<Order> getOrderById(
+    public ResponseEntity<OrderResponse> getOrderById(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails
     ) throws OrderNotFoundException, UserNotAuthorisedException, SellerNotFoundException {
         return ResponseEntity.ok(orderService.getOrderById(userDetails, id));
     }
 
-    @PutMapping("/orders/new/{id}/startDelivery")
-    public ResponseEntity<Order> startDelivery(
+    @PutMapping("/orders/{id}/startDelivery")
+    public ResponseEntity<OrderResponse> startDelivery(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) throws OrderNotFoundException, UserNotAuthorisedException, SellerNotFoundException {
-        return ResponseEntity.ok(orderService.sellerChangeOrderStatus(userDetails, id, OrderStatus.PICKED_UP));
+        return ResponseEntity.ok(orderService.sellerChangeOrderStatus(userDetails, id, OrderStatus.DELIVERY));
     }
 
-    @PutMapping("/orders/delivery/{id}/complete")
-    public ResponseEntity<Order> completeOrder(
+    @PutMapping("/orders/{id}/complete")
+    public ResponseEntity<OrderResponse> completeOrder(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) throws OrderNotFoundException, UserNotAuthorisedException, SellerNotFoundException {
         return ResponseEntity.ok(orderService.sellerChangeOrderStatus(userDetails, id, OrderStatus.SHIPPED));
